@@ -113,9 +113,10 @@ public abstract class Person  {
 		String absoluteBodyWeightString = df.format(getGoalWeight() - getCurrentBodyWeight());
 		double absoluteBodyWeight = Math.abs(Double.parseDouble(absoluteBodyWeightString));
 		double absoluteBodyMuscle = Math.abs(getCalculatedGoalBodyMuscle() - getCalculatedBodyMuscle());
-		
+
+		System.out.println("\n--------------------------------------------------------------------------------");
 		System.out.println("Current weight: " + getCurrentBodyWeight());
-		System.out.println("Your goal weight is " + getGoalWeight());
+		System.out.println("Your goal weight is " + getGoalWeight() + "\n");
 		
 		if (getCurrentBodyWeight() > getGoalWeight()) {
 			gainOrLose = "to lose";
@@ -135,7 +136,8 @@ public abstract class Person  {
 			gainOrLose = "to gain";
 		}
 		System.out.println("And " + df.format(absoluteBodyFat) + " pounds "+ gainOrLose + " to reach your goal fat weight of " + getCalculatedGoalBodyFat() + " lbs.");
-		
+
+		System.out.print("--------------------------------------------------------------------------------");	
 	}
 	public String getRange() {
 		return personSex.outputRange(getCurrentBodyFat());

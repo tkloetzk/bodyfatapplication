@@ -4,12 +4,13 @@ import java.sql.SQLException;
 
 public class ConnectionFactory {
 	private static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-	private static final String DB_URL = "jdbc:mysql://localhost/bodyfat"; //raspberry
+	/*private static final String DB_URL = "jdbc:mysql://localhost/bodyfat";
 	private static final String USER = "root";
-	private static final String PASS = "";
-	/*private static final String DB_URL = "jdbc:mysql://192.168.3.100:3306/bodyfat"; //raspberry
+	private static final String PASS = "";*/
+	//private static final String DB_URL = "jdbc:mysql://192.168.3.100:3306/bodyfat"; //raspberry - ethernet
+	private static final String DB_URL = "jdbc:mysql://192.168.3.115:3306/bodyfat"; //raspberry - wireless
 	private static final String USER = "tucker";
-	private static final String PASS = "tanner22";*/
+	private static final String PASS = "tanner22";
 	
 	private ConnectionFactory() {
 		try {

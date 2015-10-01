@@ -27,6 +27,7 @@ public class CheckUser {
 	}
 	
 	public void submitEntry(Person user){
+		System.out.print("... ");
 		try {
 			getConnected();
 			query = "INSERT INTO entries ("
@@ -41,9 +42,10 @@ public class CheckUser {
 			stmt.setDouble(4, user.getCalculatedBodyMuscle());
 			stmt.setString(5, user.getUsername());
 			stmt.executeUpdate();
-			System.out.println("Entry successfully submitted");
+			System.out.print("Entry successfully submitted.\n");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
+			System.out.println("Error submitting entry.");
 			e.printStackTrace();
 		}
 		finally {
