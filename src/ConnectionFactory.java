@@ -30,7 +30,7 @@ public class ConnectionFactory {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			System.out.println("ERROR: Unable to connect");
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 		return connection;
 		
