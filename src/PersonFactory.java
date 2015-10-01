@@ -5,14 +5,77 @@ import java.util.List;
 import java.util.Scanner;
 
 public class PersonFactory {
+	private Person human;
 	Connection con = null;
 	PreparedStatement statement = null;
+	private char answer;
+	private char saved = 'y';
 	private String sex, goalWeight, goalBodyFat;
 	private double currentWeight, currentBodyFat, goalWeightNew, goalBodyFatNew;
 	private int sexNewUser;
+	private int i = 0;
 	private List<String[]> resultArray = new ArrayList<>();
 	
-	public Person getPerson(String username) {
+	CheckUser check = new CheckUser();
+	Scanner keyboardSaveUser = new Scanner(System.in);
+	Scanner keyboard = new Scanner(System.in);
+	
+	public void begin(){
+		System.out.print("Enter your username (or press zero to create one): ");
+		questions();		
+	}
+	
+	public void questions() {
+		if (keyboard.hasNextInt()){
+			human = createPerson("0");
+			i++;
+			if (i <= 2){
+				System.out.println("\nWould you like to save yourself into the database?");
+				saved = keyboardSaveUser.next().toLowerCase().charAt(0);
+				human.setDatabaseSave(saved);
+				if (human.getDatabaseSave() == 'y'){
+					check.createUserEntry(human);
+					outputMuscleAndFat(human);
+				} else {
+					outputMuscleAndFat(human);
+					seeProgress(human);
+				}
+				i++;
+			}
+		} else {
+			human = getPerson(keyboard.nextLine());
+			outputMuscleAndFat(human);
+		}			
+		
+		if (human.getDatabaseSave() != 'n'){
+			Scanner keyboardSaveEntry = new Scanner(System.in);
+			System.out.print("\nWould you like to save this as an entry? ");
+			answer = keyboardSaveEntry.next().toLowerCase().charAt(0);
+			
+			if (answer == 'y'){
+				check.submitEntry(human);
+			}
+			seeProgress(human);
+		}
+	}
+	public static void outputMuscleAndFat(Person human) {
+		System.out.println("-------------------------------------------");
+		System.out.println("\nYour muscle is "+human.getCalculatedBodyMuscle());
+		System.out.println("Your body fat is " + human.getCalculatedBodyFat() + "\n");
+		System.out.println("-------------------------------------------");
+	}
+	public static void seeProgress(Person human) {
+		char answer;
+		Scanner keyboard = new Scanner(System.in);
+		System.out.print("Would you like to see your progress? ");
+		answer = keyboard.next().toLowerCase().charAt(0);
+		
+		if (answer == 'y'){
+			human.getProgress();
+		} 
+	}
+	
+	private Person getPerson(String username) {
 		Scanner keyboard = new Scanner(System.in);
 
 		CheckUser check = new CheckUser();
@@ -25,15 +88,16 @@ public class PersonFactory {
 				goalBodyFat = row[5];
 			}
 			
-			System.out.println("Enter current weight");
+			System.out.print("Enter current weight: ");
 			currentWeight = keyboard.nextDouble();
 			
-			System.out.println("Enter current body fat percentage");
+			System.out.print("Enter current body fat percentage: ");
 			currentBodyFat = keyboard.nextDouble();
-
+			
+			System.out.println("\n-------------------------------------------");
 			return new PersonExists(username, sex, currentWeight, currentBodyFat, goalWeight, goalBodyFat);
 		} else {
-			System.out.println("No record of username " + username + ". Would you like to add it to the database?");
+			System.out.print("No record of username " + username + ". Would you like to add it to the database? ");
 			char saved = keyboard.next().toLowerCase().charAt(0);
 			if (saved == 'y'){
 				Person human = createPerson(username);
@@ -42,16 +106,17 @@ public class PersonFactory {
 				return human;
 			} else {
 				Person human = createPerson(username);
-				human.setDatabaseSave(saved);
+				human.setDatabaseSave('n');
+				seeProgress(human);
 				return human;
 			}
 		} 
 	}
-	public Person createPerson(String username){
+	private Person createPerson(String username){
 		Scanner keyboard = new Scanner(System.in);
 
 		if (username == "0"){
-			System.out.println("Please enter your username:");
+			System.out.print("Please enter your username: ");
 			username = keyboard.next();
 		}
 		
@@ -61,16 +126,15 @@ public class PersonFactory {
 		if (availableUserName.size() == 0){
 			return getNewUserStats(username);
 		} else {
-			//this causes it to break
-			System.out.println("Sorry, that username is taken. Try another one.");
-			//createPerson("0");
-			return null;
+			System.out.println("\nSorry, that username is taken. Try another one.\n");
+			questions();
+			return human;
 		}
 		
 	}
 	public Person getNewUserStats(String username) {
 		Scanner keyboard = new Scanner(System.in);
-		System.out.println("Enter your sex");
+		System.out.print("Enter your sex: ");
 		char sex = keyboard.next().toLowerCase().charAt(0);
 		if (sex == 'm'){
 			sexNewUser = 1;
@@ -78,19 +142,18 @@ public class PersonFactory {
 			sexNewUser = 0;
 		}
 		
-		System.out.println("Enter your current weight");
+		System.out.print("Enter your current weight: ");
 		currentWeight = keyboard.nextDouble();
 		
-		System.out.println("Enter your current body fat percentage");
+		System.out.print("Enter your current body fat percentage: ");
 		currentBodyFat = keyboard.nextDouble();
 		
-		System.out.println("Enter your goal weight");
+		System.out.print("Enter your goal weight: ");
 		goalWeightNew = keyboard.nextDouble();
 		
-		System.out.println("Enter your goal body fat percentage");
+		System.out.print("Enter your goal body fat percentage: ");
 		goalBodyFatNew = keyboard.nextDouble();
 		
-		//System.out.println(username + " "+ sexNewUser  + " "+ currentWeight  + " "+ currentBodyFat  + " "+ goalWeightNew  + " "+ goalBodyFatNew);
 		return new PersonNew(username, sexNewUser, currentWeight, currentBodyFat, goalWeightNew, goalBodyFatNew);
 	}
 
