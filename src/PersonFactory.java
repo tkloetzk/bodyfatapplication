@@ -11,7 +11,7 @@ public class PersonFactory {
 	private char answer;
 	private char saved = 'y';
 	private String sex, goalWeight, goalBodyFat;
-	private double currentWeight, currentBodyFat, goalWeightNew, goalBodyFatNew;
+	private double currentBodyFat, currentWeight, goalWeightNew, goalBodyFatNew;
 	private int sexNewUser;
 	private int i = 0;
 	private List<String[]> resultArray = new ArrayList<>();
@@ -60,7 +60,7 @@ public class PersonFactory {
 	}
 	public static void outputMuscleAndFat(Person human) {
 		System.out.println("-------------------------------------------");
-		System.out.println("\nYour muscle is "+human.getCalculatedBodyMuscle());
+		System.out.println("\nYour muscle is "+ human.getCalculatedBodyMuscle());
 		System.out.println("Your body fat is " + human.getCalculatedBodyFat() + "\n");
 		System.out.println("-------------------------------------------");
 	}
@@ -87,12 +87,10 @@ public class PersonFactory {
 				goalWeight = row[4];
 				goalBodyFat = row[5];
 			}
+
+            currentWeight = getCurrentBodyWeight();
 			
-			System.out.print("Enter current weight: ");
-			currentWeight = keyboard.nextDouble();
-			
-			System.out.print("Enter current body fat percentage: ");
-			currentBodyFat = keyboard.nextDouble();
+			currentBodyFat = getCurrentBodyFat();
 			
 			System.out.println("\n-------------------------------------------");
 			return new PersonExists(username, sex, currentWeight, currentBodyFat, goalWeight, goalBodyFat);
@@ -111,6 +109,37 @@ public class PersonFactory {
 				return human;
 			}
 		} 
+	}
+
+	private double getCurrentBodyWeight() {
+		Scanner keyboard = new Scanner(System.in);
+		double currentWeight = 0;
+		while (true) {
+			System.out.print("Enter current weight: ");
+			String input = keyboard.next();
+		    try {
+		        currentWeight = Double.parseDouble(input);
+		        break;
+		    } catch (NumberFormatException ne) {
+		        System.out.println(input + " is not a valid number, try again.");
+		    }
+		}
+		return currentWeight;
+	}
+	private double getCurrentBodyFat() {
+		Scanner keyboard = new Scanner(System.in);
+		double currentBodyFat = 0;
+		while (true) {
+			System.out.print("Enter current body fat percentage: ");
+			String input = keyboard.next();
+		    try {
+		        currentBodyFat = Double.parseDouble(input);
+		        break;
+		    } catch (NumberFormatException ne) {
+		        System.out.println(input + " is not a valid number, try again.");
+		    }
+		}
+		return currentBodyFat;
 	}
 	private Person createPerson(String username){
 		Scanner keyboard = new Scanner(System.in);
@@ -142,11 +171,10 @@ public class PersonFactory {
 			sexNewUser = 0;
 		}
 		
-		System.out.print("Enter your current weight: ");
-		currentWeight = keyboard.nextDouble();
+
+        double currentWeight = getCurrentBodyWeight();
 		
-		System.out.print("Enter your current body fat percentage: ");
-		currentBodyFat = keyboard.nextDouble();
+        currentBodyFat = getCurrentBodyFat();
 		
 		System.out.print("Enter your goal weight: ");
 		goalWeightNew = keyboard.nextDouble();
