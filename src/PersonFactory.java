@@ -77,20 +77,22 @@ public class PersonFactory {
 	
 	private Person getPerson(String username) {
 		Scanner keyboard = new Scanner(System.in);
-
+		char sexChar = 0;
 		CheckUser check = new CheckUser();
 		resultArray = check.getUser(username);
 		int count = resultArray.size();
 		if (count == 1){
 			for (String[] row: resultArray){
 				sex = row[3];
+				sexChar = sex.equalsIgnoreCase("0") ? 'f' : 'm';
+				System.out.println(sexChar);
 				goalWeight = row[4];
 				goalBodyFat = row[5];
 			}
 
             currentWeight = getCurrentBodyWeight();
 			
-			currentBodyFat = getCurrentBodyFat();
+			currentBodyFat = getCurrentBodyFat(sexChar);
 			
 			System.out.println("\n-------------------------------------------");
 			return new PersonExists(username, sex, currentWeight, currentBodyFat, goalWeight, goalBodyFat);
@@ -119,6 +121,13 @@ public class PersonFactory {
 			String input = keyboard.next();
 		    try {
 		        currentWeight = Double.parseDouble(input);
+		        if (currentWeight < 80 || currentWeight > 299){
+		        	System.out.println("Did you enter your body weight (" + currentWeight + " lbs) correctly?");
+		    		char answer = keyboard.next().toLowerCase().charAt(0);
+		    		if (answer != 'y'){
+		    			getCurrentBodyWeight();
+		    		}
+		        }
 		        break;
 		    } catch (NumberFormatException ne) {
 		        System.out.println(input + " is not a valid number, try again.");
@@ -126,7 +135,7 @@ public class PersonFactory {
 		}
 		return currentWeight;
 	}
-	private double getCurrentBodyFat() {
+	private double getCurrentBodyFat(char sex) {
 		Scanner keyboard = new Scanner(System.in);
 		double currentBodyFat = 0;
 		while (true) {
@@ -134,6 +143,14 @@ public class PersonFactory {
 			String input = keyboard.next();
 		    try {
 		        currentBodyFat = Double.parseDouble(input);
+		        if (sex == 'f' && (currentBodyFat < 11 || currentBodyFat > 35) ||
+		        		sex == 'm' && (currentBodyFat < 4 || currentBodyFat > 27)){
+		        	System.out.println("Did you enter your body fat percentage (" + currentBodyFat + "%) correctly?");
+		        	char answer = keyboard.next().toLowerCase().charAt(0);
+		    		if (answer != 'y'){
+		    			getCurrentBodyFat(sex);
+		    		}
+		        }
 		        break;
 		    } catch (NumberFormatException ne) {
 		        System.out.println(input + " is not a valid number, try again.");
@@ -171,10 +188,9 @@ public class PersonFactory {
 			sexNewUser = 0;
 		}
 		
-
         double currentWeight = getCurrentBodyWeight();
 		
-        currentBodyFat = getCurrentBodyFat();
+        currentBodyFat = getCurrentBodyFat(sex);
 		
 		System.out.print("Enter your goal weight: ");
 		goalWeightNew = keyboard.nextDouble();
