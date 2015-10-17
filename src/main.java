@@ -24,7 +24,7 @@ public class main {
 		} else {
 			System.out.println("Not connected.");
 			System.out.println("Please enter your name");
-			human = personFactory.getNewUserStats(keyboard.next());
+			human = personFactory.getNewUserStats(keyboard.next(), true);
 			PersonFactory.outputMuscleAndFat(human);
 			PersonFactory.seeProgress(human);
 		}

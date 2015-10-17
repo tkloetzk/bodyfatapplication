@@ -10,9 +10,11 @@ public abstract class Person  {
 	public BodyFatRange personSex;
 	DecimalFormat df = new DecimalFormat("#.##"); 
 	private char saved;
+	private String password;
 	
-	public Person(String username, int sex, double currentWeight, double currentBodyFat2, double goalWeight, double goalBodyFat) {
+	public Person(String username, String password, int sex, double currentWeight, double currentBodyFat2, double goalWeight, double goalBodyFat) {
 		setUsername(username);
+		setPassword(password);
 		setSex(sex);
 		setCurrentBodyWeight(currentWeight);
 		setCurrentBodyFat(currentBodyFat2);
@@ -36,6 +38,12 @@ public abstract class Person  {
 	}
 	public void setSex(int sex){
 		this.sex = sex;
+	}
+	public String getPassword() {
+		return password;
+	}
+	private void setPassword(String password){
+		this.password = password;
 	}
 	public double getCurrentBodyWeight() {
 		String bodyWeightString = df.format(currentBodyWeight);

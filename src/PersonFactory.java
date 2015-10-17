@@ -1,7 +1,5 @@
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 public class PersonFactory {
@@ -9,12 +7,10 @@ public class PersonFactory {
 	Connection con = null;
 	PreparedStatement statement = null;
 	private char answer;
-	private char saved = 'y';
-	private String sex, goalWeight, goalBodyFat;
+	private char saved = 'y';;
 	private double currentBodyFat, currentWeight, goalWeightNew, goalBodyFatNew;
-	private int sexNewUser;
-	private int i = 0;
-	private List<String[]> resultArray = new ArrayList<>();
+	private int sexNewUser, i = 0;
+	private Object[] resultArray;
 	
 	CheckUser check = new CheckUser();
 	Scanner keyboardSaveUser = new Scanner(System.in);
@@ -27,7 +23,7 @@ public class PersonFactory {
 	
 	public void questions() {
 		if (keyboard.hasNextInt()){
-			human = createPerson("0");
+			human = createPerson("0", false);
 			i++;
 			if (i <= 2){
 				System.out.println("\nWould you like to save yourself into the database?");
@@ -43,6 +39,9 @@ public class PersonFactory {
 				i++;
 			}
 		} else {
+			//get username, check if in mysql
+			//if in mysql, ask for password
+			//if not in mysql, ask user if they want to be created
 			human = getPerson(keyboard.nextLine());
 			outputMuscleAndFat(human);
 		}			
@@ -76,18 +75,14 @@ public class PersonFactory {
 	}
 	
 	private Person getPerson(String username) {
-		Scanner keyboard = new Scanner(System.in);
 		char sexChar = 0;
 		CheckUser check = new CheckUser();
-		resultArray = check.getUser(username);
-		int count = resultArray.size();
-		if (count == 1){
-			for (String[] row: resultArray){
-				sex = row[3];
-				sexChar = sex.equalsIgnoreCase("0") ? 'f' : 'm';
-				System.out.println(sexChar);
-				goalWeight = row[4];
-				goalBodyFat = row[5];
+		resultArray = check.username(username);
+		
+		if (resultArray[0] != null){
+
+			if (resultArray[1] != null){
+				passwordChecker();
 			}
 
             currentWeight = getCurrentBodyWeight();
@@ -95,22 +90,38 @@ public class PersonFactory {
 			currentBodyFat = getCurrentBodyFat(sexChar);
 			
 			System.out.println("\n-------------------------------------------");
-			return new PersonExists(username, sex, currentWeight, currentBodyFat, goalWeight, goalBodyFat);
+			return new PersonExists(username, (String)resultArray[1], (String)resultArray[2], currentWeight, currentBodyFat, (String)resultArray[3], (String)resultArray[4]);
 		} else {
 			System.out.print("No record of username " + username + ". Would you like to add it to the database? ");
 			char saved = keyboard.next().toLowerCase().charAt(0);
 			if (saved == 'y'){
-				Person human = createPerson(username);
+				Person human = createPerson(username, false);
 				check.createUserEntry(human);
 				human.setDatabaseSave(saved);
 				return human;
 			} else {
-				Person human = createPerson(username);
+				Person human = createPerson(username, true);
 				human.setDatabaseSave('n');
 				seeProgress(human);
 				return human;
 			}
 		} 
+	}
+
+	private boolean passwordChecker() {
+		Scanner keyboard = new Scanner(System.in);
+		String userPass = (String) resultArray[1];
+		System.out.print("Please enter your password: ");
+		String password = keyboard.nextLine();
+
+		if (!userPass.equalsIgnoreCase(password)){
+			System.out.println("Invalid password. Try again.");
+			passwordChecker();
+		} else {
+			System.out.println();
+			return true;
+		}
+		return false;
 	}
 
 	private double getCurrentBodyWeight() {
@@ -158,19 +169,18 @@ public class PersonFactory {
 		}
 		return currentBodyFat;
 	}
-	private Person createPerson(String username){
+	private Person createPerson(String username, boolean skip){
 		Scanner keyboard = new Scanner(System.in);
-
 		if (username == "0"){
 			System.out.print("Please enter your username: ");
 			username = keyboard.next();
 		}
 		
 		CheckUser check = new CheckUser();
-		List availableUserName = check.getUser(username);
+		Object[] availableUserName = check.username(username);
 		
-		if (availableUserName.size() == 0){
-			return getNewUserStats(username);
+		if (availableUserName[0] == null){
+			return getNewUserStats(username, skip);
 		} else {
 			System.out.println("\nSorry, that username is taken. Try another one.\n");
 			questions();
@@ -178,8 +188,10 @@ public class PersonFactory {
 		}
 		
 	}
-	public Person getNewUserStats(String username) {
+	public Person getNewUserStats(String username, boolean skip) {
 		Scanner keyboard = new Scanner(System.in);
+		String password = createPassword(skip);
+
 		System.out.print("Enter your sex: ");
 		char sex = keyboard.next().toLowerCase().charAt(0);
 		if (sex == 'm'){
@@ -198,7 +210,21 @@ public class PersonFactory {
 		System.out.print("Enter your goal body fat percentage: ");
 		goalBodyFatNew = keyboard.nextDouble();
 		
-		return new PersonNew(username, sexNewUser, currentWeight, currentBodyFat, goalWeightNew, goalBodyFatNew);
+		return new PersonNew(username, password, sexNewUser, currentWeight, currentBodyFat, goalWeightNew, goalBodyFatNew);
+	}
+
+	private String createPassword(boolean skip) {
+		Scanner keyboard = new Scanner(System.in);
+		String password = null;
+		if (skip != true){
+			System.out.print("Please enter a password (or press enter to skip): ");
+			password = keyboard.nextLine();
+
+			if (password == null || password.isEmpty()){
+				password = null;
+			}
+		}
+		return password;
 	}
 
 }

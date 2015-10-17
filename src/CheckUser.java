@@ -3,16 +3,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 
 public class CheckUser {
 	private Connection connection;
 	private Statement statement;
-	private List<String[]> table = new ArrayList<>();
 	ResultSet rs = null;
 	private String query;
 	PreparedStatement stmt = null;
+	private String[] columnHeaders = {"username", "password", "is_Male", "goalWeight", "goalBodyFat"};
 	
 	public CheckUser(){}
 	
@@ -53,22 +51,18 @@ public class CheckUser {
 		}
 	}
 	
-	public List<String[]> getUser(String name) {
+	public Object[] username(String name) {
 		query = "SELECT * FROM users WHERE username = '" + name + "';";
+		Object[] resultsArray = new Object[5];
 
 		try {
 			getConnected();
 			rs = statement.executeQuery(query);
-
-			int nCol = rs.getMetaData().getColumnCount();
 			
-			while( rs.next()) {
-			    String[] row = new String[nCol];
-			    for( int iCol = 1; iCol <= nCol; iCol++ ){
-			        row[iCol-1] = rs.getString( iCol );
-			    }
-
-			    table.add( row );
+			while (rs.next()){
+				for (int i = 0; i < columnHeaders.length; i++){
+					resultsArray[i] = rs.getString(columnHeaders[i]);
+				}
 			}
 			
 		} catch (SQLException e) {
@@ -79,7 +73,7 @@ public class CheckUser {
 			closeConnection(rs);
 		}
 
-		return table;
+		return resultsArray;
 	}
 	
 	public void getGoals(String username) {

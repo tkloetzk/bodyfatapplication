@@ -1,7 +1,7 @@
 
 public class PersonExists extends Person {
-	public PersonExists(String usersName, String usersSex, double currentWeight, double currentBodyFat, String goalWeight, String goalBodyFat) {
-		super(usersName, Integer.parseInt(usersSex), currentWeight, currentBodyFat, Double.parseDouble(goalWeight), Double.parseDouble(goalBodyFat));
+	public PersonExists(String usersName, String password, String usersSex, double currentWeight, double currentBodyFat, String goalWeight, String goalBodyFat) {
+		super(usersName, password, Integer.parseInt(usersSex), currentWeight, currentBodyFat, Double.parseDouble(goalWeight), Double.parseDouble(goalBodyFat));
 		
 	//	System.out.println("Person exists: " + usersName);
 
