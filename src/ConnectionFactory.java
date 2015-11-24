@@ -4,13 +4,13 @@ import java.sql.SQLException;
 
 public class ConnectionFactory {
 	private static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-	/*private static final String DB_URL_WIRELESS = "jdbc:mysql://localhost/bodyfat";
+	private static final String DB_URL_WIRELESS = "jdbc:mysql://localhost/bodyfat";
 	private static final String USER = "root";
-	private static final String PASS = "";*/
-	private static final String DB_URL_ETHERNET = "jdbc:mysql://192.168.3.110:3306/bodyfat"; //raspberry - ethernet
+	private static final String PASS = "";
+	/*private static final String DB_URL_ETHERNET = "jdbc:mysql://192.168.3.110:3306/bodyfat"; //raspberry - ethernet
 	private static final String DB_URL_WIRELESS = "jdbc:mysql://192.168.3.111:3306/bodyfat"; //raspberry - wireless
 	private static final String USER = "tucker";
-	private static final String PASS = "tanner22";
+	private static final String PASS = "tanner22";*/
 	
 	private ConnectionFactory() {
 		try {
@@ -22,7 +22,7 @@ public class ConnectionFactory {
 	
 	public static Connection createConnection(){
 		Connection connection = null;
-		try {
+		/*try {
 		//	System.out.println("Connecting to Body Fat Database...");
 			connection = DriverManager.getConnection(DB_URL_WIRELESS, USER, PASS);
 			
@@ -36,6 +36,11 @@ public class ConnectionFactory {
 			} catch (SQLException f) {
 				System.out.println("ERROR: Unable to establish a connection.");				
 			}
+		}*/
+		try {
+			connection = DriverManager.getConnection(DB_URL_WIRELESS, USER, PASS);
+		} catch (SQLException e){
+			System.out.println("Error");
 		}
 		return connection;
 		

@@ -8,8 +8,9 @@ public abstract class Person  {
 	goalWeight, goalBodyFat;
 	private int sex;
 	public BodyFatRange personSex;
+	public Macros macros;
 	DecimalFormat df = new DecimalFormat("#.##"); 
-	private char saved;
+	private char saved, period;
 	private String password;
 	
 	public Person(String username, String password, int sex, double currentWeight, double currentBodyFat2, double goalWeight, double goalBodyFat) {
@@ -145,7 +146,7 @@ public abstract class Person  {
 		}
 		System.out.println("And " + df.format(absoluteBodyFat) + " pounds "+ gainOrLose + " to reach your goal fat weight of " + getCalculatedGoalBodyFat() + " lbs.");
 
-		System.out.print("--------------------------------------------------------------------------------");	
+		System.out.print("--------------------------------------------------------------------------------\n\n");	
 	}
 	public String getRange() {
 		return personSex.outputRange(getCurrentBodyFat());
@@ -157,6 +158,29 @@ public abstract class Person  {
 
 	public void setDatabaseSave(char saved) {
 		this.saved = saved;
+	}
+
+	public void setPeriod(char c) {
+		period = c;		
+	}
+	
+	public char getPeriod() {
+		return period;
+	}
+
+	public void seeMacros(char diet) {
+		if (getSex() == 0){
+			macros = new FemaleMacros();
+		} else {
+			macros = new MaleMacros();
+		}
+		if (diet == 'l'){
+			macros.cutting(getCurrentBodyWeight());
+		} else if (diet == 'g'){
+			macros.bulking(getCurrentBodyWeight());
+		} else {
+			macros.maintaining();
+		}
 	}
 
 }

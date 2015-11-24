@@ -30,8 +30,8 @@ public class CheckUser {
 			getConnected();
 			query = "INSERT INTO entries ("
 					+ "bodyFatPercentageEntry, bodyWeightEntry, "
-					+ "fat, muscle, timestamp, username"
-					+ ") VALUES (?, ?, ?, ?, NOW(), ?);";	
+					+ "fat, muscle, timestamp, username, period"
+					+ ") VALUES (?, ?, ?, ?, NOW(), ?, ?);";	
 			
 			stmt = connection.prepareStatement(query);
 			stmt.setDouble(1, user.getCurrentBodyFat());
@@ -39,6 +39,7 @@ public class CheckUser {
 			stmt.setDouble(3, user.getCalculatedBodyFat());
 			stmt.setDouble(4, user.getCalculatedBodyMuscle());
 			stmt.setString(5, user.getUsername());
+			stmt.setString(6, String.valueOf(user.getPeriod()));
 			stmt.executeUpdate();
 			System.out.print("Entry successfully submitted.\n");
 		} catch (SQLException e) {

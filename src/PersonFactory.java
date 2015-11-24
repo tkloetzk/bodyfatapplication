@@ -52,11 +52,33 @@ public class PersonFactory {
 			answer = keyboardSaveEntry.next().toLowerCase().charAt(0);
 			
 			if (answer == 'y'){
+				if (human.getSex() == 0){
+					System.out.println("If you're on your period, you can skip this entry when viewing your progress. Enter yes or no:");
+					human.setPeriod(keyboardSaveEntry.next().toLowerCase().charAt(0));
+				} else {
+					human.setPeriod('n');
+				}
 				check.submitEntry(human);
 			}
 			seeProgress(human);
 		}
+		getMacros(human);
 	}
+	private void getMacros(Person human) {
+		Scanner keyboard = new Scanner(System.in);
+		
+		System.out.print("Would you like to get an update on your nutritional goals? ");
+		if (keyboard.next().toLowerCase().charAt(0) == 'y') {
+			System.out.print("Are you losing weight, gaining muscle, or maintaining? ");
+			char diet = keyboard.next().toLowerCase().charAt(0);
+			if (diet == 'l' || diet == 'g' || diet == 'm'){
+				human.seeMacros(diet);
+			} else {
+				System.out.println("I'm sorry. I didn't get that. Ask again.");
+			}
+		}
+	}
+
 	public static void outputMuscleAndFat(Person human) {
 		System.out.println("-------------------------------------------");
 		System.out.println("\nYour muscle is "+ human.getCalculatedBodyMuscle());
