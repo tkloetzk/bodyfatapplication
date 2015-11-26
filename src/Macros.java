@@ -5,7 +5,7 @@ public interface Macros {
 
 	void bulking(double currentBodyWeight);
 	
-	String maintaining();
+	void maintaining(double currentBodyWeight);
 	
-	
+	void printOutMacros();	
 }

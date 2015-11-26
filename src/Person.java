@@ -179,7 +179,7 @@ public abstract class Person  {
 		} else if (diet == 'g'){
 			macros.bulking(getCurrentBodyWeight());
 		} else {
-			macros.maintaining();
+			macros.maintaining(getCurrentBodyWeight());
 		}
 	}
 
