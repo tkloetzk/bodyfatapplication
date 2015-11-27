@@ -115,4 +115,7 @@ public class CheckUser {
 			closeConnection(rs);
 		}
 	}
+	public void getHistory() {
+		
+	}
 }

@@ -61,9 +61,17 @@ public class PersonFactory {
 				check.submitEntry(human);
 			}
 			seeProgress(human);
+			getPreviousEntries(human);
 		}
 		getMacros(human);
 	}
+	private void getPreviousEntries(Person human) {
+		System.out.println("Would you like to compare your entry to the last 3 months?");	
+		if (keyboard.next().toLowerCase().charAt(0) == 'y') {
+			
+		}
+	}
+
 	private void getMacros(Person human) {
 		Scanner keyboard = new Scanner(System.in);
 		
@@ -125,6 +133,7 @@ public class PersonFactory {
 				Person human = createPerson(username, true);
 				human.setDatabaseSave('n');
 				seeProgress(human);
+				getPreviousEntries(human);
 				return human;
 			}
 		} 
