@@ -3,6 +3,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 public class CheckUser {
 	private Connection connection;
@@ -115,7 +119,47 @@ public class CheckUser {
 			closeConnection(rs);
 		}
 	}
-	public void getHistory() {
+	public void getHistory(Person human) {
+		String dashes = " -------------------------------------------------------";
+		query = "SELECT * FROM entries WHERE username = '" + human.getUsername() + 
+				"' AND (`period` IS NULL OR `period` = 'n') AND timestamp > NOW() - INTERVAL 90 DAY;";
+		//need to check if female and want to see period days.
 		
+		try {
+			getConnected();
+			DecimalFormat df = new DecimalFormat("#.00"); 
+			boolean todaySubmitted = false;
+			SimpleDateFormat ft = new SimpleDateFormat ("MM/dd/yyyy");
+			String today = new SimpleDateFormat("MM/dd/yyyy").format(Calendar.getInstance().getTime());
+			rs = statement.executeQuery(query);
+			System.out.println("\n"+dashes);
+			System.out.println("| Date:      | Weight:  | Body Fat %: | Muscle  | Fat   |");
+			System.out.println(dashes);
+			while (rs.next()){
+				Date date = rs.getDate("timestamp");
+				String dateString = ft.format(date);
+				if (dateString.matches(today)){
+					todaySubmitted = true;
+				}
+				double bodyWeight = rs.getDouble("bodyWeightEntry");
+				double bodyFat = rs.getDouble("bodyFatPercentageEntry");
+				double muscle = rs.getDouble("muscle");
+				double fat = rs.getDouble("fat");
+				System.out.printf("| %10s | %-9s| %-11s | %-7s | %-5s |\n", dateString, df.format(bodyWeight), df.format(bodyFat), df.format(muscle), df.format(fat));
+			
+			}
+			if (todaySubmitted == false){
+				System.out.println(dashes);
+				System.out.printf("| %10s | %-9s| %-11s | %-7s | %-5s |\n", today, df.format(human.getCurrentBodyWeight()), df.format(human.getCurrentBodyFat()), df.format(human.getCalculatedGoalBodyMuscle()), df.format(human.getCalculatedGoalBodyFat()));
+			}
+			System.out.println(dashes + "\n");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		finally {
+			closeConnection(rs);
+		}
+
 	}
 }

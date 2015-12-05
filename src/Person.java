@@ -134,10 +134,19 @@ public abstract class Person  {
 		} else {
 			//System.out.println("else");
 		}
-
+		
+		
 		System.out.println("You have " + absoluteBodyWeight  + " total pounds left " + gainOrLose);
 
-		System.out.println("With " + (df.format(absoluteBodyMuscle)) + " pounds of muscle to gain to reach your goal muscle weight of " + getCalculatedGoalBodyMuscle() + " lbs.");
+		String remaining = "With " + (df.format(absoluteBodyMuscle)) + " pounds of muscle to gain to reach your goal muscle weight of " + getCalculatedGoalBodyMuscle() + " lbs.";
+		StringBuilder sb = new StringBuilder(remaining);
+		
+		int i = 0;
+		while ((i = sb.indexOf(" ", i + 79)) != -1) {
+		    sb.replace(i, i + 1, "\n");
+		}
+
+		System.out.println(sb.toString());
 
 		if (getCurrentBodyFat() > getGoalBodyFat()){
 			gainOrLose = "to lose";

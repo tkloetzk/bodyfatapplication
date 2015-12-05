@@ -63,27 +63,26 @@ public class PersonFactory {
 			seeProgress(human);
 			getPreviousEntries(human);
 		}
-		getMacros(human);
+		System.out.print("Would you like to get an update on your nutritional goals? ");
+		if (keyboard.next().toLowerCase().charAt(0) == 'y') {
+			getMacros(human);
+		}
 	}
 	private void getPreviousEntries(Person human) {
-		System.out.println("Would you like to compare your entry to the last 3 months?");	
+		System.out.print("Would you like to compare your entry to the last 3 months? ");	
 		if (keyboard.next().toLowerCase().charAt(0) == 'y') {
-			
+			check.getHistory(human);
 		}
 	}
 
 	private void getMacros(Person human) {
-		Scanner keyboard = new Scanner(System.in);
-		
-		System.out.print("Would you like to get an update on your nutritional goals? ");
-		if (keyboard.next().toLowerCase().charAt(0) == 'y') {
-			System.out.print("Are you losing weight, gaining muscle, or maintaining? ");
-			char diet = keyboard.next().toLowerCase().charAt(0);
-			if (diet == 'l' || diet == 'g' || diet == 'm'){
-				human.seeMacros(diet);
-			} else {
-				System.out.println("I'm sorry. I didn't get that. Ask again.");
-			}
+		System.out.print("Are you losing weight, gaining muscle, or maintaining? ");
+		char diet = keyboard.next().toLowerCase().charAt(0);
+		if (diet == 'l' || diet == 'g' || diet == 'm'){
+			human.seeMacros(diet);
+		} else {
+			System.out.println("I'm sorry. I didn't get that. Ask again.");
+			getMacros(human);
 		}
 	}
 
@@ -106,7 +105,7 @@ public class PersonFactory {
 	
 	private Person getPerson(String username) {
 		char sexChar = 0;
-		CheckUser check = new CheckUser();
+		check = new CheckUser();
 		resultArray = check.username(username);
 		
 		if (resultArray[0] != null){
